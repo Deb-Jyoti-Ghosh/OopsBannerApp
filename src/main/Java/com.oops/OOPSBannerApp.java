@@ -1,94 +1,82 @@
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- * OOPS Banner App - Use Case 7 (UC7)
- * Stores character banner patterns in a class and retrieves them via a map-like structure.
+ * OOPS Banner App - Use Case 8 (UC8)
+ * Stores character patterns in a HashMap and renders a word using a function.
  *
  * @author Deb Jyoti Ghosh
- * @version 7.0
+ * @version 8.0
  */
 public class OOPSBannerApp {
 
-    // Holds one character and its 7-line banner pattern
-    static class CharacterPattern {
-        private final char character;
-        private final String[] pattern; // must be 7 lines
+    private static final int HEIGHT = 7;
 
-        CharacterPattern(char character, String[] pattern) {
-            this.character = character;
-            this.pattern = pattern;
-        }
+    // Build and return the pattern map
+    private static Map<Character, String[]> buildPatternMap() {
+        Map<Character, String[]> map = new HashMap<>();
 
-        char getCharacter() {
-            return character;
-        }
+        map.put('O', new String[]{
+                " ***** ",
+                "*     *",
+                "*     *",
+                "*     *",
+                "*     *",
+                "*     *",
+                " ***** "
+        });
 
-        String[] getPattern() {
-            return pattern;
-        }
+        map.put('P', new String[]{
+                " ***** ",
+                "*     *",
+                "*     *",
+                " ***** ",
+                "*      ",
+                "*      ",
+                "*      "
+        });
+
+        map.put('S', new String[]{
+                " ***** ",
+                "*      ",
+                "*      ",
+                " ***** ",
+                "      *",
+                "      *",
+                " ***** "
+        });
+
+        return map;
     }
 
-    // Central storage for patterns (like a mini pattern library)
-    static class CharacterPatternMap {
-        private static final CharacterPattern[] PATTERNS = new CharacterPattern[] {
-                new CharacterPattern('O', new String[] {
-                        " ***** ",
-                        "*     *",
-                        "*     *",
-                        "*     *",
-                        "*     *",
-                        "*     *",
-                        " ***** "
-                }),
-                new CharacterPattern('P', new String[] {
-                        " ***** ",
-                        "*     *",
-                        "*     *",
-                        " ***** ",
-                        "*      ",
-                        "*      ",
-                        "*      "
-                }),
-                new CharacterPattern('S', new String[] {
-                        " ***** ",
-                        "*      ",
-                        "*      ",
-                        " ***** ",
-                        "      *",
-                        "      *",
-                        " ***** "
-                })
-        };
+    // Render any word using the patterns from the map
+    private static void renderBanner(String word, Map<Character, String[]> patternMap) {
 
-        static String[] getPattern(char ch) {
-            char upper = Character.toUpperCase(ch);
-            for (CharacterPattern cp : PATTERNS) {
-                if (cp.getCharacter() == upper) {
-                    return cp.getPattern();
+        for (int row = 0; row < HEIGHT; row++) {
+            StringBuilder sb = new StringBuilder();
+
+            for (int i = 0; i < word.length(); i++) {
+                char ch = Character.toUpperCase(word.charAt(i));
+                String[] pattern = patternMap.get(ch);
+
+                // If pattern missing, print blanks instead of crashing
+                if (pattern == null) {
+                    pattern = new String[]{"       ", "       ", "       ", "       ", "       ", "       ", "       "};
+                }
+
+                sb.append(pattern[row]);
+
+                if (i < word.length() - 1) {
+                    sb.append(" "); // spacing between letters
                 }
             }
-            // If character not found, return blank 7 lines to avoid crash
-            return new String[] {"       ", "       ", "       ", "       ", "       ", "       ", "       "};
+
+            System.out.println(sb.toString());
         }
     }
 
     public static void main(String[] args) {
-
-        String word = "OOPS";
-        int height = 7;
-
-        for (int row = 0; row < height; row++) {
-            StringBuilder lineBuilder = new StringBuilder();
-
-            for (int i = 0; i < word.length(); i++) {
-                String[] pattern = CharacterPatternMap.getPattern(word.charAt(i));
-                lineBuilder.append(pattern[row]);
-
-                // space between letters (not after last one)
-                if (i < word.length() - 1) {
-                    lineBuilder.append(" ");
-                }
-            }
-
-            System.out.println(lineBuilder);
-        }
+        Map<Character, String[]> patternMap = buildPatternMap();
+        renderBanner("OOPS", patternMap);
     }
 }
