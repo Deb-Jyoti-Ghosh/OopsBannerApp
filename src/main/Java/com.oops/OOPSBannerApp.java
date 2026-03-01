@@ -1,62 +1,94 @@
 /**
- * OOPS Banner App - Use Case 6 (UC6)
- * Uses static helper methods to generate banner patterns for O, P, S
- * and composes "OOPS" without hardcoding full lines in main.
+ * OOPS Banner App - Use Case 7 (UC7)
+ * Stores character banner patterns in a class and retrieves them via a map-like structure.
  *
  * @author Deb Jyoti Ghosh
- * @version 6.0
+ * @version 7.0
  */
 public class OOPSBannerApp {
 
-    private static String[] getO() {
-        return new String[] {
-                " ***** ",
-                "*     *",
-                "*     *",
-                "*     *",
-                "*     *",
-                "*     *",
-                " ***** "
-        };
+    // Holds one character and its 7-line banner pattern
+    static class CharacterPattern {
+        private final char character;
+        private final String[] pattern; // must be 7 lines
+
+        CharacterPattern(char character, String[] pattern) {
+            this.character = character;
+            this.pattern = pattern;
+        }
+
+        char getCharacter() {
+            return character;
+        }
+
+        String[] getPattern() {
+            return pattern;
+        }
     }
 
-    private static String[] getP() {
-        return new String[] {
-                " ***** ",
-                "*     *",
-                "*     *",
-                " ***** ",
-                "*      ",
-                "*      ",
-                "*      "
+    // Central storage for patterns (like a mini pattern library)
+    static class CharacterPatternMap {
+        private static final CharacterPattern[] PATTERNS = new CharacterPattern[] {
+                new CharacterPattern('O', new String[] {
+                        " ***** ",
+                        "*     *",
+                        "*     *",
+                        "*     *",
+                        "*     *",
+                        "*     *",
+                        " ***** "
+                }),
+                new CharacterPattern('P', new String[] {
+                        " ***** ",
+                        "*     *",
+                        "*     *",
+                        " ***** ",
+                        "*      ",
+                        "*      ",
+                        "*      "
+                }),
+                new CharacterPattern('S', new String[] {
+                        " ***** ",
+                        "*      ",
+                        "*      ",
+                        " ***** ",
+                        "      *",
+                        "      *",
+                        " ***** "
+                })
         };
-    }
 
-    private static String[] getS() {
-        return new String[] {
-                " ***** ",
-                "*      ",
-                "*      ",
-                " ***** ",
-                "      *",
-                "      *",
-                " ***** "
-        };
+        static String[] getPattern(char ch) {
+            char upper = Character.toUpperCase(ch);
+            for (CharacterPattern cp : PATTERNS) {
+                if (cp.getCharacter() == upper) {
+                    return cp.getPattern();
+                }
+            }
+            // If character not found, return blank 7 lines to avoid crash
+            return new String[] {"       ", "       ", "       ", "       ", "       ", "       ", "       "};
+        }
     }
 
     public static void main(String[] args) {
 
-        String[] o = getO();
-        String[] p = getP();
-        String[] s = getS();
+        String word = "OOPS";
+        int height = 7;
 
-        String[] banner = new String[7];
-        for (int i = 0; i < banner.length; i++) {
-            banner[i] = String.join(" ", o[i], o[i], p[i], s[i]);
-        }
+        for (int row = 0; row < height; row++) {
+            StringBuilder lineBuilder = new StringBuilder();
 
-        for (String line : banner) {
-            System.out.println(line);
+            for (int i = 0; i < word.length(); i++) {
+                String[] pattern = CharacterPatternMap.getPattern(word.charAt(i));
+                lineBuilder.append(pattern[row]);
+
+                // space between letters (not after last one)
+                if (i < word.length() - 1) {
+                    lineBuilder.append(" ");
+                }
+            }
+
+            System.out.println(lineBuilder);
         }
     }
 }
